@@ -82,13 +82,14 @@ LookerQuery = function(dictionary, query, fields, filters = NULL){
 # TEST
 
 filter_list = strsplit(filters, split=":")
-if(length(filter_list)==1){
+if (length(filter_list)==1) {
 	# code for single filter
-} else{
-	for(i in 1:length(filter_list)){
-			paste("filters[", filter_list[[i]][1]), "]=",
-				gsub(' ', '+', unlist(strsplit(filter_list[[2]], split=":"))[2])
-}
+} else {
+	filter_list_clean <- list()
+	for (i in 1:length(filter_list)) {
+			filter_list_clean[[i]] <- gsub(" ", "+", paste("filters[", filter_list[[i]][1], "]=", gsub("^[[:space:]]|[[:space:]]$", "", filter_list[[i]])[2], sep=""))
+	}
+filter_list_clean <- paste(unlist(filter_list_clean), collapse="&")
 }
 
 # END TEST
