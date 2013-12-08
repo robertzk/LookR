@@ -30,21 +30,68 @@ LookerSetup = function(token, secret, host, port){
 		Looker$port <- port
 	}
 
-LookerSetup(token = "Mkz9GRYoIhyuJ898YG89Ig", secret = "v1+MNxMg1vdmljYbtBhEDFEQSlAUEZd4xWd", host = "demo.looker.com", port = 443)
+LookerSetup(
+	token = "Mkz9GRYoIhyuJ898YG89Ig", 
+	secret = "v1+MNxMg1vdmljYbtBhEDFEQSlAUEZd4xWd", 
+	host = "demo.looker.com", 
+	port = 443
+)
 
 # LookerQuery constructs the API call
-LookerQuery = function(dictionary, query, fields, filters){
+LookerQuery = function(dictionary, query, fields, filters = NULL){
 
 		Looker$field_list <- paste(as.character(fields), sep="' '", collapse=",")
 
 		Looker$today <- format(Sys.time(), format="%a, %d %b %Y %H:%M:%S -0800")
 
-		Looker$location <- paste("/api/dictionaries", dictionary, "queries", paste(query, '.json', sep = ""), sep = "/")
+		Looker$location <- paste(
+								"/api/dictionaries", 
+								dictionary, 
+								"queries", 
+								paste(query, '.json', sep = ""), 
+								sep = "/"
+							)
 
 		Looker$nonce <- paste(sample(c(letters[1:26], sample(0:9, 10)), 32), collapse = "")
 
-		Looker$url <- paste("https://", Looker$host, Looker$location, "?", paste("fields=", Looker$field_list, sep=""), '&', 
-							paste("filters[", unlist(strsplit(filters, split=":"))[1], "]=", gsub(' ', '+', unlist(strsplit(filters, split=":"))[2]), sep=""), sep="")
+# allow for queries without filters #
+		if(is.null(filters)){
+			Looker$url <- paste(
+								"https://", 
+								Looker$host, 
+								Looker$location, 
+								"?", 
+								paste("fields=", Looker$field_list, sep=""), 
+								sep=""
+							)
+				} else {
+			Looker$url <- paste(
+								"https://", 
+								Looker$host, 
+								Looker$location, 
+								"?", 
+								paste("fields=", Looker$field_list, sep=""), 
+								'&', 
+								paste(
+									"filters[", 
+									unlist(strsplit(filters, split=":"))[1], "]=", 
+									gsub(' ', '+', unlist(strsplit(filters, split=":"))[2]), 
+									sep=""), 
+								sep="")
+				}
+# TEST
+
+filter_list = strsplit(filters, split=":")
+if(length(filter_list)==1){
+	# code for single filter
+} else{
+	for(i in 1:length(filter_list)){
+			paste("filters[", filter_list[[i]][1]), "]=",
+				gsub(' ', '+', unlist(strsplit(filter_list[[2]], split=":"))[2])
+}
+}
+
+# END TEST
 
 		Looker$StringToSign <- paste('GET', '\n',  
 										Looker$location, '\n', 
@@ -69,5 +116,28 @@ LookerQuery = function(dictionary, query, fields, filters){
 return(Looker$results)
 }
 
-LookerQuery(dictionary="thelook", query="orders", fields=c("orders.count", "users.count", "users.created_month"), filters=c("orders.created_date:365 days"))
+LookerQuery(
+	dictionary="thelook", 
+	query="orders", 
+	fields=c("orders.count", "users.count", "users.created_month"), 
+	filters=c("orders.created_date:365 days")
+)
 
+LookerQuery(
+	dictionary="thelook", 
+	query="users", 
+	fields=c("users.age", "users.count"), 
+	filters=c("users.state:California, Nevada", "users.gender:m")
+)
+
+setClass("Looker")
+useMethod("Setup", "Looker", Setup.Looker)
+Setup.Looker = function(token, secret, host, port){
+			Looker$token <- token
+	
+		Looker$secret <- secret
+	
+		Looker$host <- host
+	
+		Looker$port <- port
+}
