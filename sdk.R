@@ -15,6 +15,8 @@ require(digest)
 # LookerSetup simply declares token, secret, host, and port as variables in the Looker environment which are then used in LookerQuery function
 LookerSetup = function(token, secret, host, port){
 
+		if(url.exists(paste("https://", host, sep=""))){
+		
 		Looker <<- new.env()
 	
 		Looker$token <- token
@@ -24,6 +26,12 @@ LookerSetup = function(token, secret, host, port){
 		Looker$host <- host
 	
 		Looker$port <- port
+		
+		} else {
+
+			stop("The host name you entered does no exist.")
+
+		}
 	}
 
 # LookerQuery constructs the API call
@@ -51,7 +59,10 @@ LookerQuery = function(dictionary, query, fields, filters = NULL){
 								Looker$host, 
 								Looker$location, 
 								"?", 
-								paste("fields=", Looker$field_list, sep=""), 
+								paste(
+									"fields=", 
+									Looker$field_list, 
+									sep=""), 
 								sep=""
 							)
 
@@ -64,7 +75,10 @@ LookerQuery = function(dictionary, query, fields, filters = NULL){
 								Looker$host, 
 								Looker$location, 
 								"?", 
-								paste("fields=", Looker$field_list, sep=""), 
+								paste(
+									"fields=", 
+									Looker$field_list, 
+									sep=""), 
 								'&', 
 								filter_list_clean, 
 								sep="")
@@ -76,20 +90,38 @@ LookerQuery = function(dictionary, query, fields, filters = NULL){
 										Looker$location, '\n', 
 										Looker$today, '\n',
 										Looker$nonce, '\n',
-										paste("fields=", Looker$field_list, sep=""), '\n',
-										sep = '')			
+										paste(
+											"fields=", 
+											Looker$field_list, 
+											sep=""), 
+											'\n',
+										sep="")			
 		} else {
 
 		Looker$StringToSign <- paste('GET', '\n',  
 										Looker$location, '\n', 
 										Looker$today, '\n',
 										Looker$nonce, '\n',
-										paste("fields=", Looker$field_list, sep=""), '\n',
-										paste(gsub("&", "\n", filter_list_clean), "\n", sep=""),
+										paste(
+											"fields=", 
+											Looker$field_list, 
+											sep=""), 
+											'\n',
+										paste(
+											gsub("&", "\n", filter_list_clean), 
+											"\n", 
+											sep=""),
 										sep = '')		
 		}
 
-		Looker$signature <- base64(hmac(Looker$secret, enc2utf8(Looker$StringToSign), algo="sha1", raw=TRUE), encode=TRUE)[1]
+		Looker$signature <- base64(
+								hmac(
+									Looker$secret, 
+									enc2utf8(
+										Looker$StringToSign), 
+									algo="sha1", 
+									raw=TRUE), 
+								encode=TRUE)[1]
 		
 		Looker$authorization <- paste(Looker$token, Looker$signature, sep=":")
 
@@ -101,7 +133,9 @@ LookerQuery = function(dictionary, query, fields, filters = NULL){
 										"x-llooker-api-version" = 1),
 							.opts = list(ssl.verifypeer = FALSE, timeout = 3)
 			)
+
 return(Looker$results)
+
 }
 
 # in the case of one or more filters, filtersClean handles proper url formatting #
@@ -124,7 +158,9 @@ filter_list = strsplit(filters, split=":")
 
 		filter_list_clean <- paste(unlist(filter_list_clean), collapse="&")
 	}
+
 return(filter_list_clean)
+
 }
 
 
@@ -147,12 +183,5 @@ LookerQuery(
 	dictionary="thelook", 
 	query="orders", 
 	fields=c("orders.count", "users.count", "users.created_month"), 
-	filters=c("orders.created_date:365 days")
-)
-
-LookerQuery(
-	dictionary="thelook", 
-	query="users", 
-	fields=c("users.age", "users.count"), 
 	filters=c("orders.created_date:365 days")
 )
