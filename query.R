@@ -103,6 +103,8 @@ require(digest)
 							.opts = list(ssl.verifypeer = FALSE, timeout = 3)
 			)
 
-return(Looker$results)
+		Looker$output <- LookerToDataFrame(Looker$results)
+
+	return(Looker$output)
 
 }
