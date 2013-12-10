@@ -100,10 +100,34 @@ require(digest)
 										'x-llooker-nonce' = Looker$nonce,
 										Accept = "application/json",
 										"x-llooker-api-version" = 1),
-							.opts = list(ssl.verifypeer = FALSE, timeout = 3)
+							.opts = list(ssl.verifypeer = FALSE, timeout = 30)
 			)
 
 		Looker$output <- LookerToDataFrame(Looker$results)
+
+# print to screen the filters applied (it is not expicit in the result set) #
+		message(
+			sprintf(
+				"%s has been applied as a filter\n", 
+				gsub("^[[:space:]]|[[:space:]]$",
+				"",
+				paste(
+					str_extract(filters, "^.*:"), 
+					paste(
+						"'", 
+						gsub(
+							":[[:space:]]*", 
+							"", 
+							str_extract(filters, ":.*[[:alnum:]].*")
+							), 
+						"'", 
+						sep=""
+						), 
+					sep=""
+					)
+				)
+			)
+		)
 
 	return(Looker$output)
 
