@@ -45,13 +45,15 @@ The function LookerSetup takes token, secret, host, and port as mandatory argume
 
 ```R
 df <- LookerQuery(
- 		dictionary="thelook", 
-	 	query="orders", 
- 		fields=c("orders.created_month", "orders.count"), 
- 		filters=c("orders.created_date: 24 months", "orders.is_first_purchase: Yes")
+ 		dictionary = "thelook", 
+	 	query = "orders", 
+ 		fields = c("orders.created_month", "orders.count"), 
+ 		filters = c("orders.created_date: 24 months", "orders.is_first_purchase: Yes")
 	)
 
 head(df)
+
+# returns
   orders.count orders.created_month
 1          131              2014-02
 2          386              2014-01
@@ -59,6 +61,20 @@ head(df)
 4          334              2013-11
 5          332              2013-10
 6          342              2013-09
+
+json <- LookerQuery(
+ 		dictionary = "thelook", 
+	 	query = "orders", 
+ 		fields = c("orders.created_month", "orders.count"), 
+ 		filters = c("orders.created_date: 3 months"),
+ 		output = "json"
+	)	
+	
+print(json)
+
+# returns 
+[1] "{\"fields\":[{\"name\":\"orders.count\"},{\"name\":\"orders.created_month\"}],
+\"data\":[[323.0,\"2014-02\"],[1062.0,\"2014-01\"],[1037.0,\"2013-12\"]]}"
 ```
 The function LookerQuery takes dictionary, query, and fields as mandatory arguments; filters, limit, and output are optional arguments. (Note: filters are passed as a vector of key-value pairs containing the dimension or measure name and the filter language, separated by a colon.) The output options supported are an R data frame or JSON blob—the arguments are output="data.frame" and output="json," respectively.
 ```R
