@@ -1,12 +1,22 @@
 # LookerQuery constructs the API call
-LookerQuery = function(dictionary, query, fields, filters = NULL){
+LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, output = "data.frame"){
 
 # required packages #
-require(RCurl)
-require(rjson)
-require(digest)
+# require(RCurl)
+# require(RJSONIO)
+# require(digest)
+# require(stringr)
 
 		Looker$field_list <- paste(as.character(sort(fields)), sep="' '", collapse=",")
+
+		if(any(is.na(filters))){
+			Looker$filters <- NA
+		} else { 
+			Looker$filters <- sort(filters)}
+
+		Looker$filter_list_clean <- ifelse(any(is.na(filters)), NA, filtersClean(Looker$filters))
+
+		Looker$limit <- limit
 
 		Looker$today <- format(Sys.time(), format="%a, %d %b %Y %H:%M:%S -0800")
 
@@ -20,68 +30,9 @@ require(digest)
 
 		Looker$nonce <- paste(sample(c(letters[1:26], sample(0:9, 10)), 32), collapse = "")
 
-# allow for queries without filters #
-		if(is.null(filters)){
+		Looker$url <- LookerURLBuild(filters = Looker$filters, limit = Looker$limit)
 
-			Looker$url <- paste(
-								"https://", 
-								Looker$host, 
-								Looker$location, 
-								"?", 
-								paste(
-									"fields=", 
-									Looker$field_list, 
-									sep=""), 
-								sep=""
-							)
-
-				} else {	
-
-			filter_list_clean <- filtersClean(sort(filters))
-
-			Looker$url <- paste(
-								"https://", 
-								Looker$host, 
-								Looker$location, 
-								"?", 
-								paste(
-									"fields=", 
-									Looker$field_list, 
-									sep=""), 
-								'&', 
-								filter_list_clean, 
-								sep="")
-				}
-
-		if(is.null(filters)){
-
-		Looker$StringToSign <- paste('GET', '\n',  
-										Looker$location, '\n', 
-										Looker$today, '\n',
-										Looker$nonce, '\n',
-										paste(
-											"fields=", 
-											Looker$field_list, 
-											sep=""), 
-											'\n',
-										sep="")			
-		} else {
-
-		Looker$StringToSign <- paste('GET', '\n',  
-										Looker$location, '\n', 
-										Looker$today, '\n',
-										Looker$nonce, '\n',
-										paste(
-											"fields=", 
-											Looker$field_list, 
-											sep=""), 
-											'\n',
-										paste(
-											gsub("&", "\n", filter_list_clean), 
-											"\n", 
-											sep=""),
-										sep = '')		
-		}
+		Looker$StringToSign <- LookerStringToSignBuild(filters = Looker$filters, limit = Looker$limit)
 
 		Looker$signature <- base64(
 								hmac(
@@ -94,18 +45,31 @@ require(digest)
 		
 		Looker$authorization <- paste(Looker$token, Looker$signature, sep=":")
 
+
 		Looker$results <- getURL(Looker$url, 
 							httpheader = c(Authorization = Looker$authorization, 
 										Date = Looker$today,
 										'x-llooker-nonce' = Looker$nonce,
 										Accept = "application/json",
 										"x-llooker-api-version" = 1),
-							.opts = list(ssl.verifypeer = FALSE, timeout = 30)
+							.opts = list(ssl.verifypeer = FALSE, timeout = 120000)
 			)
 
-		Looker$output <- LookerToDataFrame(Looker$results)
+# output type can be a JSON object or data frame #
+
+		if(output == "data.frame"){
+
+			Looker$output <- LookerToDataFrame(LookerObject = Looker$results)
+
+		} else {
+
+			Looker$output <- Looker$results
+
+		}
+
 
 # print to screen the filters applied (it is not expicit in the result set) #
+	if(any(!is.na(filters))){
 		message(
 			sprintf(
 				"%s has been applied as a filter\n", 
@@ -128,7 +92,10 @@ require(digest)
 				)
 			)
 		)
+	} else	{
 
+
+	}
 	return(Looker$output)
 
 }

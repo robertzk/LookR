@@ -1,9 +1,9 @@
 # In the case of one or more filters, filtersClean handles 
 # proper url cleanup and formatting
 
-filtersClean = function(filters = NULL){
+filtersClean = function(filters = Looker$filters){
 
-filter_list = strsplit(filters, split=":")
+filter_list = strsplit(Looker$filters, split=":")
 
 		if(length(filter_list)==1){
 
@@ -39,6 +39,6 @@ filter_list = strsplit(filters, split=":")
 		filter_list_clean <- paste(unlist(filter_list_clean), collapse="&")
 	}
 
-return(filter_list_clean)
+return(URLencode(filter_list_clean))
 
 }
