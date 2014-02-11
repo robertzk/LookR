@@ -1,0 +1,58 @@
+Introduction
+================
+
+LookR is an R package that contains functions that interface with the Looker API programmatically—namely LookerSetup and LookerQuery.
+
+Installation
+------------
+
+* From terminal
+```R
+$ curl -O  -k https://github.com/llooker/LookR/blob/master/LookR_1.0.tar.gz | tar zx
+```
+At this point, you have two options: more terminal commands or the R console.
+
+* Within the R console 
+```R 
+install.packages('<path to directory containing tar>/LookR_1.0.tar.gz', repos = NULL, type = 'source')
+install.packages('RCurl')
+install.packages('RJSONIO')
+install.packages('digest')
+install.packages('stringr')
+```
+* From terminal
+```R
+$ cd  <directory containing LookR_1.0.tar.gz>
+$ R CMD check LookR
+$ R CMD install LookR
+```
+
+Examples
+------------
+
+```R
+library("LookR")
+
+LookerSetup(
+	token = "Jkz9GRYoIhyuJ4498FG89Iz",						# Not a real token
+	secret = "v2+MNxMg1vdmijjYbtBhGDFEQSlAUEZd4xWd",		# Not a real secret
+	host = "demo.looker.com", 
+	port = 443
+)
+```
+
+The function LookerSetup takes token, secret, host, and port as mandatory arguments. The function stores these values for use in LookerQuery.
+
+```R
+LookerQuery(
+ 	dictionary="thelook", 
+ 	query="orders", 
+ 	fields=c("orders.created_month", "orders.count"), 
+ 	filters=c("orders.created_date: 24 months", "orders.is_first_purchase: Yes")
+)
+```
+The function LookerQuery takes dictionary, query, and fields as mandatory arguments; filters, limit, and output are optional arguments. (Note: filters are passed as a vector of key-value pairs containing the dimension or measure name and the filter language, separated by a colon.) The output options supported are an R data frame or JSON blob—the arguments are output="data.frame" and output="json," respectively.
+```R
+*NOT SUPPORTED in LookR 1.0*
+LookerParseURL(url="https://demo.looker.com/explore/thelook/orders?fields=orders.count&f[orders.created_date]=30+days&limit=500")
+```
