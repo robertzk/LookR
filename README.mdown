@@ -6,25 +6,18 @@ LookR is an R package that contains functions that interface with the Looker API
 Installation
 ------------
 
-* From terminal
+* From terminal (you must have wget installed on your machine)
 ```R
 $ wget https://github.com/sdhoover/LookR/raw/master/LookR_1.0.tar.gz | tar zx
 ```
-At this point, you have two options: more terminal commands or the R console.
 
-* Within the R console 
+* Within the R console (install required packages first)
 ```R 
-install.packages('<path to directory containing tar>/LookR_1.0.tar.gz', repos = NULL, type = 'source')
 install.packages('RCurl')
 install.packages('RJSONIO')
 install.packages('digest')
 install.packages('stringr')
-```
-* From terminal
-```R
-$ cd  <directory containing LookR_1.0.tar.gz>
-$ R CMD check LookR
-$ R CMD install LookR
+install.packages('<path to directory containing tar>/LookR_1.0.tar.gz', repos = NULL, type = 'source')
 ```
 
 Examples
@@ -34,7 +27,7 @@ Examples
 library("LookR")
 
 LookerSetup(
-	token = "Jkz9GRYoIhyuJ4498FG89Iz",						# Not a real token
+	token = "Jkz9GRYoIhyuJ4498FG89Iz",				# Not a real token
 	secret = "v2+MNxMg1vdmijjYbtBhGDFEQSlAUEZd4xWd",		# Not a real secret
 	host = "demo.looker.com", 
 	port = 443
@@ -77,6 +70,13 @@ print(json)
 \"data\":[[323.0,\"2014-02\"],[1062.0,\"2014-01\"],[1037.0,\"2013-12\"]]}"
 ```
 The function LookerQuery takes dictionary, query, and fields as mandatory arguments; filters, limit, and output are optional arguments. (Note: filters are passed as a vector of key-value pairs containing the dimension or measure name and the filter language, separated by a colon.) The output options supported are an R data frame or JSON blob—the arguments are output="data.frame" and output="json," respectively.
+
+There is a known issue with LookR, in that the json-to-data-frame conversion returns every column as a factor. In order to do any operations on a number, you must first run:
+```R
+df$column_name <- as.numeric(as.character(df$column_name))
+median(df$column_name)
+```
+
 ```R
 *NOT SUPPORTED in LookR 1.0*
 LookerParseURL(url="https://demo.looker.com/explore/thelook/orders?fields=orders.count&f[orders.created_date]=30+days&limit=500")
