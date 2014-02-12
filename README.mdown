@@ -8,7 +8,7 @@ Installation
 
 * From terminal
 ```R
-$ wget wget https://github.com/sdhoover/LookR/raw/master/LookR_1.0.tar.gz | tar zx
+$ wget https://github.com/sdhoover/LookR/raw/master/LookR_1.0.tar.gz | tar zx
 ```
 At this point, you have two options: more terminal commands or the R console.
 
