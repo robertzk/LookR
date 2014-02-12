@@ -8,7 +8,7 @@ Installation
 
 * From terminal
 ```R
-$ curl -O  -k https://github.com/llooker/LookR/blob/master/LookR_1.0.tar.gz | tar zx
+$ curl -O  -k https://github.com/sdhoover/LookR/blob/master/LookR_1.0.tar.gz | tar zx
 ```
 At this point, you have two options: more terminal commands or the R console.
 
