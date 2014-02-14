@@ -1,2 +1,2 @@
 import(RCurl, RJSONIO, digest, stringr)
-export(LookerSetup, LookerQuery)
+export(LookerSetup, LookerQuery, convertTypes)
