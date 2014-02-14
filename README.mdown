@@ -33,7 +33,7 @@ LookerSetup(
 )
 ```
 
-The function LookerSetup takes token, secret, host, and port as mandatory arguments. The function stores these values for use in LookerQuery.
+The function ```LookerSetup``` takes ```token, secret, host, and port``` as mandatory arguments. The function stores these values for use in ```LookerQuery```.
 
 ```R
 df <- LookerQuery(
@@ -45,7 +45,7 @@ df <- LookerQuery(
 
 head(df)
 ```
-The function LookerQuery takes dictionary, query, and fields as mandatory arguments; filters, limit, and output are optional arguments. (Note: filters are passed as a vector of key-value pairs containing the dimension or measure name and the filter language, separated by a colon.) The output options supported are an R data frame or JSON object—the arguments are output="data.frame" and output="json", respectively.
+The function ```LookerQuery``` takes ```dictionary, query, and fields``` as mandatory arguments; ```filters, limit, and output``` are optional arguments. (Note: filters are passed as a vector of key-value pairs containing the dimension or measure name and the filter language, separated by a colon.) The output options supported are an R data frame or JSON object—the arguments are ```output="data.frame"``` and ```output="json"```, respectively.
 
 There is a known issue with converting a JSON object to an R data frame, in that the data types are all converted to factor. To make your life a little easier, we've included a function, ``` convertTypes ```, that converts sets of columns to the data type you specify. Here's a worked example:
 ```R
