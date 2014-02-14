@@ -6,18 +6,25 @@ LookR is an R package that contains functions that interface with the Looker API
 Installation
 ------------
 
-* From terminal (you must have wget installed on your machine)
+* From terminal
 ```R
-$ wget https://github.com/sdhoover/LookR/raw/master/LookR_1.0.tar.gz | tar zx
+$ curl -O  -k https://github.com/llooker/LookR/blob/master/LookR_1.0.tar.gz | tar zx
 ```
+At this point, you have two options: more terminal commands or the R console.
 
-* Within the R console (install required packages first)
+* Within the R console 
 ```R 
+install.packages('<path to directory containing tar>/LookR_1.0.tar.gz', repos = NULL, type = 'source')
 install.packages('RCurl')
 install.packages('RJSONIO')
 install.packages('digest')
 install.packages('stringr')
-install.packages('<path to directory containing tar>/LookR_1.0.tar.gz', repos = NULL, type = 'source')
+```
+* From terminal
+```R
+$ cd  <directory containing LookR_1.0.tar.gz>
+$ R CMD check LookR
+$ R CMD install LookR
 ```
 
 Examples
@@ -27,8 +34,8 @@ Examples
 library("LookR")
 
 LookerSetup(
-	token = "Jkz9GRYoIhyuJ4498FG89Iz",				# Not a real token
-	secret = "v2+MNxMg1vdmijjYbtBhGDFEQSlAUEZd4xWd",		# Not a real secret
+	token = "Jkz9GRYoIhyuJ4498FG89Iz",     	 	         # Not a real token
+	secret = "v2+MNxMg1vdmijjYbtBhGDFEQSlAUEZd4xWd",     # Not a real secret
 	host = "demo.looker.com", 
 	port = 443
 )
@@ -38,46 +45,48 @@ The function LookerSetup takes token, secret, host, and port as mandatory argume
 
 ```R
 df <- LookerQuery(
- 		dictionary = "thelook", 
-	 	query = "orders", 
- 		fields = c("orders.created_month", "orders.count"), 
- 		filters = c("orders.created_date: 24 months", "orders.is_first_purchase: Yes")
-	)
+ 	dictionary="thelook", 
+ 	query="orders", 
+ 	fields=c("orders.created_month", "orders.count"), 
+ 	filters=c("orders.created_date: 24 months", "orders.is_first_purchase: Yes")
+)
 
 head(df)
+```
+The function LookerQuery takes dictionary, query, and fields as mandatory arguments; filters, limit, and output are optional arguments. (Note: filters are passed as a vector of key-value pairs containing the dimension or measure name and the filter language, separated by a colon.) The output options supported are an R data frame or JSON object—the arguments are output="data.frame" and output="json", respectively.
+
+There is a known issue with converting a JSON object to an R data frame, in that the data types are all converted to factor. To make your life a little easier, we've included a function, ``` convertTypes ```, that converts sets of columns to the data type you specify. Here's a worked example:
+```R
+df <- LookerQuery(
+ 	dictionary="thelook", 
+ 	query="orders", 
+ 	fields=c("orders.created_month", "orders.count"), 
+ 	filters=c("orders.created_date: 24 months", "orders.is_first_purchase: Yes")
+)
+
+lapply(df, class)
 
 # returns
-  orders.count orders.created_month
-1          131              2014-02
-2          386              2014-01
-3          406              2013-12
-4          334              2013-11
-5          332              2013-10
-6          342              2013-09
+$orders.count
+[1] "factor"
 
-json <- LookerQuery(
- 		dictionary = "thelook", 
-	 	query = "orders", 
- 		fields = c("orders.created_month", "orders.count"), 
- 		filters = c("orders.created_date: 3 months"),
- 		output = "json"
-	)	
-	
-print(json)
+$orders.created_month
+[1] "factor"
 
-# returns 
-[1] "{\"fields\":[{\"name\":\"orders.count\"},{\"name\":\"orders.created_month\"}],
-\"data\":[[323.0,\"2014-02\"],[1062.0,\"2014-01\"],[1037.0,\"2013-12\"]]}"
+df <- convertTypes(
+ 	data = df, 
+ 	character.set = c("orders.created_month"), 
+ 	numeric.set = c('orders.count')
+)
+
+lapply(df, class)
+
+# returns
+
+$orders.count
+[1] "numeric"
+
+$orders.created_month
+[1] "character"
 ```
-The function LookerQuery takes dictionary, query, and fields as mandatory arguments; filters, limit, and output are optional arguments. (Note: filters are passed as a vector of key-value pairs containing the dimension or measure name and the filter language, separated by a colon.) The output options supported are an R data frame or JSON blob—the arguments are output="data.frame" and output="json," respectively.
-
-There is a known issue with LookR, in that the json-to-data-frame conversion returns every column as a factor. In order to do any operations on a number, you must first run:
-```R
-df$column_name <- as.numeric(as.character(df$column_name))
-median(df$column_name)
-```
-
-```R
-*NOT SUPPORTED in LookR 1.0*
-LookerParseURL(url="https://demo.looker.com/explore/thelook/orders?fields=orders.count&f[orders.created_date]=30+days&limit=500")
-```
+SUCCESS! ``` convertTypes``` takes ```data``` and at least one type set as a mandatory arguments. The type sets are ```character.set, numeric.set, integer.set ```. If you want to maintain the data type as a factor, exclude it from the ```convertType``` function.
