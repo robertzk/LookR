@@ -18,7 +18,7 @@ LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, outp
 
 		Looker$limit <- limit
 
-		Looker$today <- format(Sys.time(), format="%a, %d %b %Y %H:%M:%S -0800")
+		Looker$today <- format(Sys.time(), format="%a, %d %b %Y %H:%M:%S %z")
 
 		Looker$location <- paste(
 								"/api/dictionaries", 
