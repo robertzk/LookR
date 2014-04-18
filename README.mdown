@@ -6,10 +6,7 @@ LookR is an R package that contains functions that interface with the Looker API
 Installation
 ------------
 
-* From terminal (you must have wget installed on your machine)
-```R
-$ wget https://github.com/sdhoover/LookR/raw/master/LookR_1.0.tar.gz | tar zx
-```
+* Clone the LookR repo to your local machine.
 
 * Within the R console (install required packages first)
 ```R 
@@ -17,6 +14,7 @@ install.packages('RCurl')
 install.packages('RJSONIO')
 install.packages('digest')
 install.packages('stringr')
+install.packages('bitops')
 install.packages('<path to directory containing tar>/LookR_1.0.tar.gz', repos = NULL, type = 'source')
 ```
 
