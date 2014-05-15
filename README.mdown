@@ -26,7 +26,7 @@ library("LookR")
 
 LookerSetup(
 	token = "Jkz9GRYoIhyuJ4498FG89Iz",     	 	         # Not a real token
-	secret = "v2+MNxMg1vdmijjYbtBhGDFEQSlAUEZd4xWd",     # Not a real secret
+	secret = "v2+MNxMg1vdmijjYbtBhGDFEQSlAUEZd4xWd",         # Not a real secret
 	host = "demo.looker.com", 
 	port = 443
 )
@@ -54,30 +54,3 @@ df <- LookerQuery(
  	fields=c("orders.created_month", "orders.count"), 
  	filters=c("orders.created_date: 24 months", "orders.is_first_purchase: Yes")
 )
-
-lapply(df, class)
-
-# returns
-$orders.count
-[1] "factor"
-
-$orders.created_month
-[1] "factor"
-
-df <- convertTypes(
- 	data = df, 
- 	character.set = c("orders.created_month"), 
- 	numeric.set = c('orders.count')
-)
-
-lapply(df, class)
-
-# returns
-
-$orders.count
-[1] "numeric"
-
-$orders.created_month
-[1] "character"
-```
-SUCCESS! ``` convertTypes``` takes ```data``` and at least one type set as a mandatory arguments. The type sets are ```character.set, numeric.set, integer.set ```. If you want to maintain the data type as a factor, exclude it from the ```convertType``` function.
