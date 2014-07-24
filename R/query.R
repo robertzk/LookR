@@ -12,7 +12,8 @@ LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, outp
 		if(any(is.na(filters))){
 			Looker$filters <- NA
 		} else { 
-			Looker$filters <- sort(filters)}
+			Looker$filters <- filters[order(sapply(strsplit(filters, ":"), head, 1))]
+    }
 
 		Looker$filter_list_clean <- ifelse(any(is.na(filters)), NA, filtersClean(Looker$filters))
 
