@@ -57,10 +57,17 @@ LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, outp
 			)
 
 # output type can be a JSON object or data frame #
+    results <- fromJSON(Looker$results, nullValue = NA)
+
+    if (is.element('error_code', names(results)))
+      stop("LookerQuery failed because of ", results$error_code, ": \n\n",
+           (function(x) { if ('testthat' %in% installed.packages()[,1]) {
+            require(testthat); testthat:::colourise(x, 'red') }
+            else x })(Looker$results), "\n\n", call. = FALSE)
 
 		if(output == "data.frame"){
 
-			Looker$output <- LookerToDataFrame(LookerObject = Looker$results)
+			Looker$output <- LookerToDataFrame(LookerObject = results)
 
 		} else {
 

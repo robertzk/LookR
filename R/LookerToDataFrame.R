@@ -1,11 +1,11 @@
 LookerToDataFrame = function(LookerObject){
 
-	header <- unlist(fromJSON(LookerObject, nullValue = NA)$fields, use.names = FALSE)
+	header <- unlist(LookerObject$fields, use.names = FALSE)
 
 	df <- as.data.frame(
 					matrix(
 						unlist(
-							fromJSON(LookerObject, nullValue = NA)$data), 
+							LookerObject$data), 
 						ncol = length(header), 
 						byrow = TRUE)
 					)
