@@ -31,6 +31,7 @@ LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, outp
 
 		Looker$nonce <- paste(sample(c(letters[1:26], sample(0:9, 10)), 32), collapse = "")
 
+    Looker <<- Looker
 		Looker$url <- LookerURLBuild(filters = Looker$filters, limit = Looker$limit)
 
 		Looker$StringToSign <- LookerStringToSignBuild(filters = Looker$filters, limit = Looker$limit)
