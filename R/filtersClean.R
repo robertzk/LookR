@@ -3,7 +3,7 @@
 
 filtersClean = function(filters = Looker$filters){
 
-filter_list = strsplit(Looker$filters, split=":")
+filter_list = strsplit(filters, split=":")
 
 		if(length(filter_list)==1){
 
