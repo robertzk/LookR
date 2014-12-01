@@ -22,7 +22,7 @@ filter_list = strsplit(filters, split=":")
 
 			filter_list_clean <- list()
 
-			for (i in 1:length(filter_list)) {
+			for (i in seq_along(filter_list)) {
 
 					filter_list_clean[[i]] <- gsub(
 												" ", 

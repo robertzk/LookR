@@ -10,7 +10,7 @@ LookerURLBuild = function(...){
 	filter_list_clean <- Looker$filter_list_clean
 
 	# case when filters IS NULL and limit IS NULL #
-		if(is.na(filters) && is.na(limit)){
+		if(identical(NA, filters) && identical(NA, limit)){
 
 					url <- paste(
 								"https://", 
@@ -24,7 +24,7 @@ LookerURLBuild = function(...){
 								sep=""
 							)
 	# case when filters IS NULL and limit IS NOT NULL #
-				} else if(is.na(filters) && !is.na(limit)){
+				} else if(identical(NA, filters) && !identical(NA, limit)){
 			
 					url <- paste(
 								"https://", 
@@ -39,7 +39,7 @@ LookerURLBuild = function(...){
 								sep=""
 							)
 	# case when filters IS NOT NULL and limit IS NULL #
-				} else if(!is.na(filters) && is.na(limit)){
+				} else if(!identical(NA, filters) && identical(NA, limit)){
 
 					url <- paste(
 								"https://", 
