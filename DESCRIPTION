@@ -8,3 +8,5 @@ Maintainer: Scott Hoover <scott@looker.com>
 Description: LookR is a package that contains functions that interface with the Looker API (namely, LookerSetup and LookerQuery).
 License: GPL-2
 Depends: R (>= 2.7.0), RCurl, RJSONIO, digest, stringr
+Imports:
+    crayon

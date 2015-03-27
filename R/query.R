@@ -62,9 +62,7 @@ LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, outp
 
     if (is.element('error_code', names(results)))
       stop("LookerQuery failed because of ", results$error_code, ": \n\n",
-           (function(x) { if ('testthat' %in% installed.packages()[,1]) {
-            require(testthat); testthat:::colourise(x, 'red') }
-            else x })(Looker$results), "\n\n", call. = FALSE)
+            crayon::red(Looker$results), "\n\n", call. = FALSE)
 
 		if(output == "data.frame"){
 
