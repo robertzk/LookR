@@ -12,7 +12,9 @@ LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, outp
 		if(any(is.na(filters))){
 			Looker$filters <- NA
 		} else { 
-			Looker$filters <- filters[order(sapply(strsplit(filters, ":"), head, 1))]
+      filters2 <- sapply(strsplit(filters, ":"), `[[`, 1)
+      filters2 <- strsplit(filters2, ".", fixed = TRUE)
+			Looker$filters <- filters[order(sapply(filters2, `[[`, 1), sapply(filters2, `[[`, 2))]
     }
 
 		Looker$filter_list_clean <- ifelse(any(is.na(filters)), NA, filtersClean(Looker$filters))
@@ -46,7 +48,6 @@ LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, outp
 								encode=TRUE)[1]
 		
 		Looker$authorization <- paste(Looker$token, Looker$signature, sep=":")
-
 
 		Looker$results <- getURL(Looker$url, 
 							httpheader = c(Authorization = Looker$authorization, 
