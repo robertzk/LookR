@@ -18,9 +18,9 @@ LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, outp
       # non alpha-numeric characters. Thus, for example,
       # is.unsorted(c("fooa", "foo_bar")) used to be TRUE in R <= 3.0
       # but now became FALSE, resulting in the wrong sorting order
-      # for some Looker filters. We fix this by stripping all
-      # non-alphanumeric characters when sorting.
-      filters2 <- lapply(filters2, gsub, pattern = "[^0-9a-zA-Z]", replacement = "")
+      # for some Looker filters. We fix this by using a standard
+      # ASCII sort using underlying C code.
+      filters2 <- lapply(filters2, ascii_sort)
 			Looker$filters <- filters[order(sapply(filters2, `[[`, 1), sapply(filters2, `[[`, 2))]
     }
 
