@@ -1,2 +1,4 @@
 import(RCurl, RJSONIO, digest, stringr)
 export(LookerSetup, LookerQuery, convertTypes)
+useDynLib(LookR)
+importFrom(Rcpp,sourceCpp)

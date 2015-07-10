@@ -14,7 +14,15 @@ LookerQuery = function(dictionary, query, fields, filters = NA, limit = NA, outp
 		} else { 
       filters2 <- sapply(strsplit(filters, ":"), `[[`, 1)
       filters2 <- strsplit(filters2, ".", fixed = TRUE)
-			Looker$filters <- filters[order(sapply(filters2, `[[`, 1), sapply(filters2, `[[`, 2))]
+      # In R 3.1, the is.unsorted function was changed to ignore
+      # non alpha-numeric characters. Thus, for example,
+      # is.unsorted(c("fooa", "foo_bar")) used to be TRUE in R <= 3.0
+      # but now became FALSE, resulting in the wrong sorting order
+      # for some Looker filters. We fix this by using a standard
+      # ASCII sort using underlying C code.
+      scopes  <- sapply(filters2, `[[`, 1)
+      columns <- sapply(filters2, `[[`, 2)
+			Looker$filters <- filters[order(ascii_order(scopes), ascii_order(columns))]
     }
 
 		Looker$filter_list_clean <- ifelse(any(is.na(filters)), NA, filtersClean(Looker$filters))

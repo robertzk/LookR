@@ -1,12 +1,14 @@
 Package: LookR
 Type: Package
 Title: An Interface for the Looker API
-Version: 1.0.1
-Date: 2013-12-08
+Version: 1.0.3
+Date: 2015-07-10
 Author: Scott Hoover
 Maintainer: Scott Hoover <scott@looker.com>
 Description: LookR is a package that contains functions that interface with the Looker API (namely, LookerSetup and LookerQuery).
 License: GPL-2
 Depends: R (>= 2.7.0), RCurl, RJSONIO, digest, stringr
-Imports:
-    crayon
+Imports: 
+    crayon,
+    Rcpp
+LinkingTo: Rcpp
