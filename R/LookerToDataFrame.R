@@ -2,12 +2,13 @@ LookerToDataFrame = function(LookerObject){
 
 	header <- unlist(LookerObject$fields, use.names = FALSE)
 
-	df <- as.data.frame(
+	df <- data.frame(
 					matrix(
 						unlist(
 							LookerObject$data), 
 						ncol = length(header), 
-						byrow = TRUE)
+						byrow = TRUE),
+            stringsAsFactors = FALSE
 					)
 
 	names(df) <- header

@@ -1,3 +1,7 @@
+## Version 1.0.4
+
+* Always set `stringsAsFactors = FALSE` during data.frame conversion.
+
 ## Version 1.0.3
 
 * The R fix has subtle bugs and does not correctly compare relative ASCII codes.
