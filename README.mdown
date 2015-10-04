@@ -1,6 +1,9 @@
 Introduction
 ================
 
+**Note** This is the [Avant](https://github.com/avantcredit) fork of this package
+and contains some fixes for dealing with the Looker API through R.
+
 LookR is an R package that contains functions that interface with the Looker API programmatically—namely LookerSetup and LookerQuery.
 
 Installation
